@@ -1,0 +1,27 @@
+/*BD2 - 2o Bim - Atividade de SQL - Exercícios de DDL - Tabela_Trigger_Sequence*/
+
+savepoint p8;
+
+CREATE TABLE Log_Alteracoes (
+id_log          NUMBER,
+acao            VARCHAR2(12) NOT NULL,
+tabela          VARCHAR2(30) NOT NULL,
+data_Evento     DATE NOT NULL,
+CONSTRAINT Log_Alteracoes_PK PRIMARY KEY (id_log)
+);
+
+CREATE SEQUENCE SEQ_ID_LOG_ALTERACOES
+START WITH 1
+INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER TRG_LOG_ALTR_BI
+BEFORE INSERT ON Log_Alteracoes
+FOR EACH ROW 
+BEGIN
+        IF :NEW.id_log is null THEN
+            :NEW.id_log := SEQ_ID_LOG_ALTERACOES.NEXTVAL;
+        ELSE 
+            RAISE_APPLICATION_ERROR(-20999, 'Não é permitido inserir manualmente o ID');
+        END IF;
+END;
+    
